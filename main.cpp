@@ -5,12 +5,22 @@
 #include <opencv2/imgproc.hpp>
 #include <opencv2/highgui.hpp>
 
+extern "C" {
+#include <libavcodec/avcodec.h>
+#include <libavformat/avformat.h>
+#include <libswscale/swscale.h>
+#include <libavutil/imgutils.h>
+#include <libavutil/opt.h>
+}
+
+
 #define MAX_SEQS 500
 
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
     int numDevs;
+    avcodec_register_all();
 
     is_GetNumberOfCameras(&numDevs);
     std::cout<<"The number of cameras are "<<numDevs<<std::endl;
@@ -23,7 +33,10 @@ int main(int argc, char *argv[])
     int m_seqs[MAX_SEQS];
     int fWidth = 3840;
     int fHeight = 1200;
+    /*
     cv::Mat image(fHeight, fWidth, CV_8UC3, cv::Scalar(0,0,255));
+    std::cout<<"Hello how are"<<std::endl;
+
 
 
     int nRet = is_InitCamera(&m_Cam, NULL);
@@ -108,8 +121,8 @@ int main(int argc, char *argv[])
 
 
 
-
-
+    cv::waitKey();
+*/
     return a.exec();
 }
 
