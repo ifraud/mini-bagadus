@@ -13,6 +13,7 @@ class Camera{
 public:
 	void init();
 	void run();
+	void close();
 
 	std::thread runThread();
 

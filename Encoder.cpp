@@ -1,3 +1,4 @@
+#include "defaults.h"
 #include "Encoder.h"
 
 #include <iostream>
@@ -23,9 +24,27 @@ void Encoder::init(){
 
 }
 void Encoder::run(){
-	for (int i = 0; i < 100; i++){
-		std::cout << "Just doing random shit in Encoder\n";
-		Sleep(100);
+	int flag = 1;
+	for (int i = 0; i < 10; i++){
+		std::unique_lock<std::mutex> camLocker(camBufferMutex);
+		while (cameraBusy>1)
+			camBufferCond.wait(camLocker);
+		//Now I can flip
+		flag = flag ^ 1;
+		//encoderBusy = true;
+		camLocker.unlock();
+	
+		//Process
+		std::cout << "Processing in Encoder "<<flag<<"\n";
+		
+
+		std::unique_lock<std::mutex> encLocker(encBufferMutex);
+		cameraBusy++;
+		encoderBusy--;
+		encLocker.unlock();
+		encBufferCond.notify_one();
+		
+
 	}
 }
 

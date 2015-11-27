@@ -12,10 +12,20 @@
 //Project includes
 #include "Camera.h"
 #include "Encoder.h"
+#include "defaults.h"
+
+std::mutex camBufferMutex;
+std::condition_variable camBufferCond;
+std::mutex encBufferMutex;
+std::condition_variable encBufferCond;
+
+int encoderBusy = 0;
+int cameraBusy = 2;
 
 int main(int argc, char *argv[])
 {	
 	int numDevs;
+
 
 	is_GetNumberOfCameras(&numDevs);
 	std::cout << "The number of cameras connected are " << numDevs << "\n";
@@ -30,6 +40,8 @@ int main(int argc, char *argv[])
 
 	camThread.join();
 	encThread.join();
+
+	camInstance.close();
 
 
 }
