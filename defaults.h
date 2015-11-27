@@ -2,7 +2,7 @@
 #define DEFAULTS_H
 #include <mutex>
 #include <condition_variable>
-
+extern char **buffer;
 extern std::mutex camBufferMutex;
 extern std::condition_variable camBufferCond;
 extern std::mutex encBufferMutex;

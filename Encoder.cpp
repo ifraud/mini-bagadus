@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <windows.h>
+#include <stdio.h>
 
 class Encoder::Private
 {
@@ -25,7 +26,10 @@ void Encoder::init(){
 }
 void Encoder::run(){
 	int flag = 1;
-	for (int i = 0; i < 10; i++){
+	FILE* pFile;
+	fopen_s(&pFile, "file.bin", "wb");
+
+	for (int i = 0; i < 100; i++){
 		std::unique_lock<std::mutex> camLocker(camBufferMutex);
 		while (cameraBusy>1)
 			camBufferCond.wait(camLocker);
@@ -36,6 +40,7 @@ void Encoder::run(){
 	
 		//Process
 		std::cout << "Processing in Encoder "<<flag<<"\n";
+		fwrite(buffer[flag],1, 3840 * 1600 * 4, pFile);
 		
 
 		std::unique_lock<std::mutex> encLocker(encBufferMutex);
@@ -46,6 +51,7 @@ void Encoder::run(){
 		
 
 	}
+	fclose(pFile);
 }
 
 std::thread Encoder::runThread(){

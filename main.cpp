@@ -21,10 +21,14 @@ std::condition_variable encBufferCond;
 
 int encoderBusy = 0;
 int cameraBusy = 2;
+char **buffer;
 
 int main(int argc, char *argv[])
 {	
 	int numDevs;
+	buffer = new char*[2];
+	buffer[0] = new char[3840 * 1600 *4];
+	buffer[1] = new char[3840 * 1600 * 4];
 
 
 	is_GetNumberOfCameras(&numDevs);

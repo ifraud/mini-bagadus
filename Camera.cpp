@@ -14,13 +14,13 @@ public:
 	SENSORINFO m_sInfo;
 	HANDLE hEvent;
 	double fps=1.0;
-	int m_PixFormat = IS_CM_RGB8_PACKED;
-	int m_Bitspixel = 24;
+	int m_PixFormat = IS_CM_RGBA8_PACKED;
+	int m_Bitspixel = 32;
 	char* m_pcSeq[MAX_SEQS];
 	int m_indSeq[MAX_SEQS];
 	int m_seqs[MAX_SEQS];
 	int fWidth = 3840;
-	int fHeight = 2160;
+	int fHeight = 1600;
 };
 Camera::Private::Private(){
 
@@ -40,7 +40,7 @@ void Camera::init(){
 	std::cout << "The max height is" << p_->m_sInfo.nMaxHeight << std::endl;
 	
 	
-	char *buffer = new char[3840*2160*3];
+
 	for (int i = 0; i<MAX_SEQS; i++){
 		is_AllocImageMem(p_->m_Cam, p_->fWidth, p_->fHeight, p_->m_Bitspixel, &(p_->m_pcSeq[i]), &(p_->m_indSeq[i]));
 		is_AddToSequence(p_->m_Cam, p_->m_pcSeq[i], p_->m_indSeq[i]);
@@ -61,6 +61,7 @@ void Camera::init(){
 	nRet = is_PixelClock(p_->m_Cam, IS_PIXELCLOCK_CMD_SET, (void *)&nPClock, sizeof(nPClock));
 	is_PixelClock(p_->m_Cam, IS_PIXELCLOCK_CMD_GET, (void *)&nPClock, sizeof(nPClock));
 	is_SetFrameRate(p_->m_Cam, 30.0, &p_->fps);
+	//is_SetColorConverter(p_->m_Cam, IS_CM_UYVY_PACKED, IS_CONV_MODE_OPENCL_3X3);
 	p_->hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
 	is_InitEvent(p_->m_Cam, p_->hEvent, IS_SET_EVENT_FRAME);
 	is_EnableEvent(p_->m_Cam, IS_SET_EVENT_FRAME);
@@ -72,7 +73,7 @@ void Camera::init(){
 }
 void Camera::run(){
 	int flag = 1;
-	for (int frameNum = 0; frameNum < 10; frameNum++){
+	for (int frameNum = 0; frameNum < 100; frameNum++){
 		std::unique_lock<std::mutex> encLocker(encBufferMutex);
 		while (encoderBusy>1)
 			encBufferCond.wait(encLocker);
@@ -108,11 +109,11 @@ void Camera::run(){
 		nRet = is_LockSeqBuf(p_->m_Cam, p_->m_seqs[i], p_->m_pcSeq[i]);
 
 		//// start processing...................................
-		//memcpy(buffer, m_pcSeq[i], fWidth*fHeight * 3);
+		memcpy(buffer[flag], p_->m_pcSeq[i], p_->fWidth*p_->fHeight * 4);
 
 
 		std::cout << "Getting frame rate" << p_->fps << std::endl;
-		std::cout << "Getting pixel clock" << nNum << std::endl;
+		//std::cout << "Getting pixel clock" << nNum << std::endl;
 		//// processing completed................................
 
 		// unlock buffer
