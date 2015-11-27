@@ -48,21 +48,34 @@ void Camera::init(){
 
 	is_AOI(p_->m_Cam, IS_AOI_IMAGE_SET_SIZE, (void*)&imageSize, sizeof(imageSize));
 	nRet = is_CaptureVideo(p_->m_Cam, IS_WAIT);
+	UINT nPClock;
+	double fps;
+	nPClock = 344;
+	nRet = is_PixelClock(p_->m_Cam, IS_PIXELCLOCK_CMD_SET, (void *)&nPClock, sizeof(nPClock));
+	is_PixelClock(p_->m_Cam, IS_PIXELCLOCK_CMD_GET, (void *)&nPClock, sizeof(nPClock));
+	is_SetFrameRate(p_->m_Cam, 30.0, &fps);
+	HANDLE hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+	is_InitEvent(p_->m_Cam, hEvent, IS_SET_EVENT_FRAME);
+	is_EnableEvent(p_->m_Cam, IS_SET_EVENT_FRAME);
+
 
 	for (int j = 0; j<100; j++){
+		
+		DWORD dwRet = WaitForSingleObject(hEvent, 1000);
+		if (dwRet == WAIT_TIMEOUT){
+			std::cout << "Waited too long for the frame\n";
+			continue;
+		}
+		
 
 		int nNum, i;
 		char *pcMem, *pcMemLast;
+
+		
 		is_GetActSeqBuf(p_->m_Cam, &nNum, &pcMem, &pcMemLast);
-		double fps;
+		
 		is_GetFramesPerSecond(p_->m_Cam, &fps);
-		UINT nPClock;
-		nPClock = 344;
-		nRet = is_PixelClock(p_->m_Cam, IS_PIXELCLOCK_CMD_SET, (void *)&nPClock, sizeof(nPClock));
-		is_PixelClock(p_->m_Cam, IS_PIXELCLOCK_CMD_GET, (void *)&nPClock, sizeof(nPClock));
-
-
-		is_SetFrameRate(p_->m_Cam, 30.0, &fps);
+		
 		for (i = 0; i<MAX_SEQS; i++)
 		{
 			if (pcMemLast == m_pcSeq[i])
@@ -74,18 +87,16 @@ void Camera::init(){
 		nRet = is_LockSeqBuf(p_->m_Cam, m_seqs[i], m_pcSeq[i]);
 
 		//// start processing...................................
-		double start = GetTickCount();
 		memcpy(buffer, m_pcSeq[i], fWidth*fHeight * 3);
-		double end = GetTickCount();
-		std::cout << "The time for copy" << end - start << "\n";
-		//Sleep(30);
+		
+		
 		std::cout << "Getting frame rate" << fps << std::endl;
-		std::cout << "Getting pixel clock" << i << std::endl;
+		std::cout << "Getting pixel clock" << nNum << std::endl;
 		//// processing completed................................
 
 		// unlock buffer
 		is_UnlockSeqBuf(p_->m_Cam, m_seqs[i], m_pcSeq[i]);
-
+		
 
 	}
 
@@ -93,8 +104,14 @@ void Camera::init(){
 	is_StopLiveVideo(p_->m_Cam, IS_WAIT);
 
 
+}
+void Camera::run(){
+	for (int i = 0; i < 100; i++){
+		std::cout << "Just doing random shit\n";
+		Sleep(100);
+	}
+}
 
-
-
-
+std::thread Camera::runThread(){
+	return std::thread([=] {run(); });
 }

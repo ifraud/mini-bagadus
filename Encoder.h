@@ -1,14 +1,11 @@
-#ifndef CAMERA_H
-#define CAMERA_H
-
-//IDS Includes
-#include <uEye.h>
+#ifndef ENCODER_H
+#define ENCODER_H
 
 //std Includes
 #include <memory>
 #include <thread>
 
-class Camera{
+class Encoder{
 
 public:
 	void init();
@@ -16,8 +13,8 @@ public:
 
 	std::thread runThread();
 
-	Camera();
-	~Camera();
+	Encoder();
+	~Encoder();
 
 protected:
 	class Private;

@@ -5,3 +5,7 @@ x64/Debug/mini-bagadus.log
 *.tlog
 x64/Debug/vc120.idb
 *.pdb
+*.log
+*.suo
+*.suo
+mini-bagadus.v12.suo
