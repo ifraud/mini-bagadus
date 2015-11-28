@@ -76,7 +76,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(INTELMEDIASDKROOT)\include;C:\Program Files\IDS\uEye\Develop\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>common;$(INTELMEDIASDKROOT)\include;C:\Program Files\IDS\uEye\Develop\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -89,12 +89,14 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Program Files\IDS\uEye\Develop\include;$(INTELMEDIASDKROOT)\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>common;C:\Program Files\IDS\uEye\Develop\include;$(INTELMEDIASDKROOT)\include</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Program Files\IDS\uEye\Develop\Lib;$(INTELMEDIASDKROOT)\lib\$(Platform)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libmfx.lib;uEye_api_64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libmfx.lib;uEye_api_64.lib;d3d11.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>msvcrt.lib;msvcrtd.lib;libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -127,11 +129,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="common\common_directx11.cpp" />
+    <ClCompile Include="common\common_utils.cpp" />
+    <ClCompile Include="common\common_utils_windows.cpp" />
     <ClCompile Include="Encoder.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="common\common_directx11.h" />
+    <ClInclude Include="common\common_utils.h" />
     <ClInclude Include="defaults.h" />
     <ClInclude Include="Encoder.h" />
   </ItemGroup>

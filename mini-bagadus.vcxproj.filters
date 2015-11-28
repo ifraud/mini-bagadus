@@ -24,6 +24,15 @@
     <ClCompile Include="Encoder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="common\common_directx11.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="common\common_utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="common\common_utils_windows.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -34,6 +43,12 @@
     </ClInclude>
     <ClInclude Include="defaults.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="common\common_directx11.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="common\common_utils.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
