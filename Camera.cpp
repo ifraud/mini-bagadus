@@ -57,7 +57,7 @@ void Camera::init(){
 	nRet = is_CaptureVideo(p_->m_Cam, IS_WAIT);
 	UINT nPClock;
 	
-	nPClock = 344;
+	nPClock = 368;//Can be incremented by 8
 	nRet = is_PixelClock(p_->m_Cam, IS_PIXELCLOCK_CMD_SET, (void *)&nPClock, sizeof(nPClock));
 	is_PixelClock(p_->m_Cam, IS_PIXELCLOCK_CMD_GET, (void *)&nPClock, sizeof(nPClock));
 	is_SetFrameRate(p_->m_Cam, 30.0, &p_->fps);
@@ -73,7 +73,7 @@ void Camera::init(){
 }
 void Camera::run(){
 	int flag = 1;
-	for (int frameNum = 0; frameNum < 100; frameNum++){
+	for (int frameNum = 0; frameNum < 1000; frameNum++){
 		std::unique_lock<std::mutex> encLocker(encBufferMutex);
 		while (encoderBusy>1)
 			encBufferCond.wait(encLocker);
@@ -111,8 +111,8 @@ void Camera::run(){
 		//// start processing...................................
 		memcpy(buffer[flag], p_->m_pcSeq[i], p_->fWidth*p_->fHeight * 4);
 
-
-		std::cout << "Getting frame rate" << p_->fps << std::endl;
+		if (p_->fps < 30)
+			std::cout << "Getting frame rate" << p_->fps << std::endl;
 		//std::cout << "Getting pixel clock" << nNum << std::endl;
 		//// processing completed................................
 

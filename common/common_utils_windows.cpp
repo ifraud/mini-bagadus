@@ -11,6 +11,7 @@ Copyright(c) 2005-2014 Intel Corporation. All Rights Reserved.
 #include "common_utils.h"
 #include <iostream>
 // ATTENTION: If D3D surfaces are used, DX9_D3D or DX11_D3D must be set in project settings or hardcoded here
+#define DX11_D3D 1
 
 #ifdef DX9_D3D
 #include "common_directx.h"
@@ -28,7 +29,6 @@ mfxStatus Initialize(mfxIMPL impl, mfxVersion ver, MFXVideoSession* pSession, mf
 
 #ifdef DX11_D3D
     impl |= MFX_IMPL_VIA_D3D11;
-	std::cout << "We must do d3d\n";
 #endif
 
     // Initialize Intel Media SDK Session
@@ -36,7 +36,6 @@ mfxStatus Initialize(mfxIMPL impl, mfxVersion ver, MFXVideoSession* pSession, mf
     MSDK_CHECK_RESULT(sts, MFX_ERR_NONE, sts);
 
 #if defined(DX9_D3D) || defined(DX11_D3D)
-	std::cout<<"We must do d3d\n";
     // If mfxFrameAllocator is provided it means we need to setup DirectX device and memory allocator
     if (pmfxAllocator) {
         // Create DirectX device context
