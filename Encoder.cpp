@@ -59,8 +59,8 @@ void Encoder::init(){
 	p_->sts= Initialize(p_->impl, ver, &(p_->session), &(p_->mfxAllocator));
 	memset(&p_->mfxEncParams, 0, sizeof(p_->mfxEncParams));
 	p_->mfxEncParams.mfx.CodecId = MFX_CODEC_AVC;
-	p_->mfxEncParams.mfx.TargetUsage = MFX_TARGETUSAGE_BALANCED;
-	p_->mfxEncParams.mfx.TargetKbps = 12000;
+	p_->mfxEncParams.mfx.TargetUsage = MFX_TARGETUSAGE_BEST_SPEED;
+	p_->mfxEncParams.mfx.TargetKbps = 6000;
 	p_->mfxEncParams.mfx.RateControlMethod = MFX_RATECONTROL_VBR;
 	p_->mfxEncParams.mfx.FrameInfo.FrameRateExtN = 30;
 	p_->mfxEncParams.mfx.FrameInfo.FrameRateExtD = 1;

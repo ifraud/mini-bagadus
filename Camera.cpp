@@ -14,7 +14,7 @@ public:
 	SENSORINFO m_sInfo;
 	HANDLE hEvent;
 	double fps=1.0;
-	int m_PixFormat = IS_CM_RGBA8_PACKED;
+	int m_PixFormat = IS_CM_BGRA8_PACKED;
 	int m_Bitspixel = 32;
 	char* m_pcSeq[MAX_SEQS];
 	int m_indSeq[MAX_SEQS];
@@ -53,7 +53,14 @@ void Camera::init(){
 	imageSize.s32Width = p_->fWidth;
 	imageSize.s32Height = p_->fHeight;
 
-	is_AOI(p_->m_Cam, IS_AOI_IMAGE_SET_SIZE, (void*)&imageSize, sizeof(imageSize));
+	IS_RECT rectAOI;
+	rectAOI.s32X = p_->m_sInfo.nMaxWidth/2 - 1920;
+	rectAOI.s32Y = p_->m_sInfo.nMaxHeight / 2 - 800;
+	rectAOI.s32Width = 3840;
+	rectAOI.s32Height = 1600;
+
+	is_AOI(p_->m_Cam, IS_AOI_IMAGE_SET_AOI, (void*)&rectAOI, sizeof(rectAOI));
+	//is_AOI(p_->m_Cam, IS_AOI_IMAGE_SET_SIZE, (void*)&imageSize, sizeof(imageSize));
 	nRet = is_CaptureVideo(p_->m_Cam, IS_WAIT);
 	UINT nPClock;
 	
@@ -61,6 +68,10 @@ void Camera::init(){
 	nRet = is_PixelClock(p_->m_Cam, IS_PIXELCLOCK_CMD_SET, (void *)&nPClock, sizeof(nPClock));
 	is_PixelClock(p_->m_Cam, IS_PIXELCLOCK_CMD_GET, (void *)&nPClock, sizeof(nPClock));
 	is_SetFrameRate(p_->m_Cam, 30.0, &p_->fps);
+	double nominal = 128;
+	is_SetAutoParameter(p_->m_Cam, IS_SET_AUTO_REFERENCE, &nominal, 0);
+	double enableWB = 1;
+	is_SetAutoParameter(p_->m_Cam, IS_SET_ENABLE_AUTO_SENSOR_WHITEBALANCE, &enableWB, 0);
 	//is_SetColorConverter(p_->m_Cam, IS_CM_UYVY_PACKED, IS_CONV_MODE_OPENCL_3X3);
 	p_->hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
 	is_InitEvent(p_->m_Cam, p_->hEvent, IS_SET_EVENT_FRAME);
